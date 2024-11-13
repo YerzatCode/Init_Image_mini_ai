@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Categorization</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        input[type="file"] {
+            margin: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Image Categorization</h1>
+    <input type="file" id="imageInput" accept="image/*">
+    <br>
+    <button onclick="predictCategory()">Categorize Image</button>
+    <div id="result"></div>
+
+    <script>
+        async function predictCategory() {
+            const input = document.getElementById('imageInput')
+            if (input.files.length === 0) {
+                alert("Please select an image file.")
+                return
+            }
+
+            const formData = new FormData()
+            formData.append("file", input.files[0])
+
+            const response = await fetch('http://127.0.0.1:8000/predict/', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                const data = await response.json()
+                document.getElementById('result').textContent = "Predicted Category: " + data.category
+            } else {
+                document.getElementById('result').textContent = "Error: " + response.statusText
+            }
+        }
+    </script>
+</body>
+
+</html>
